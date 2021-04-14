@@ -14,25 +14,29 @@
         <div class="col-12">
           <div class="form-group">
             <label class="form-label">Nombre:</label>
-            <input type="text" class="form-control" placeholder="" />
+            <input type="text" class="form-control" placeholder="" v-model="nombre_pokemon" />
           </div>
-          <button type="button" class="btn btn-primary mt-4">Buscar</button>
+          <button type="button" class="btn btn-primary mt-4" @click="getPoke">Buscar</button>
         </div>
       </div>
       <div class="row mt-5">
         <div class="col-12">
-          <img src="" alt="pokemon" class="mb-4" />
+          <img :src="pokeData && pokeData.sprites && pokeData.sprites.front_default" alt="pokemon" class="mb-4" />
         </div>
         <div class="col-12">
           <h2>Movimientos</h2>
           <ul>
-            <li></li>
+            <li v-for="(move, i) in pokeData.moves" :key="i">
+              {{move.move.name}}
+            </li>
           </ul>
         </div>
         <div class="col-12">
           <h2>Habilidades</h2>
           <ul>
-            <li></li>
+            <li v-for="(ability, i) in pokeData.abilities" :key="i">
+              {{ability.ability.name}}
+            </li>
           </ul>
         </div>
       </div>
@@ -47,17 +51,18 @@ export default {
   name: "App",
   data() {
     return {
-      pokeAll: [],
+      nombre_pokemon: "pikachu",
+      pokeData: ""
     };
   },
   methods: {
     async getPoke() {
-      const url = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=1118";
+      const url = "https://pokeapi.co/api/v2/pokemon/";
       try {
-        const req = await axios(url);
+        const req = await axios(url + this.nombre_pokemon);
         if (!req) return;
-        this.pokeAll = req.data.results;
-        console.log(req.data.results);
+        this.pokeData = req.data;
+        console.log(req.data);
       } catch (error) {
         console.log(error);
       }
